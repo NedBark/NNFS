@@ -6,6 +6,7 @@ from tensorflow import keras
 import pandas as pd
 #from PIL import Image
 from scipy import ndimage
+from functions import *
 #from lr_utils import load_dataset
 
 
@@ -19,6 +20,7 @@ raw_dataset = pd.read_csv(dataset_path, names=column_names,
                           na_values="?", comment='\t',
                           sep=",", skipinitialspace=True)
 
+print(raw_dataset.dtypes)
 dataset = raw_dataset.copy()
 dataset.tail()
 
@@ -30,7 +32,7 @@ dataset["parents"] = dataset["parents"].replace(["great_pret", "pretentious", "u
 # form
 dataset["form"] = dataset["form"].replace(["foster", "incomplete", "completed", "complete"], [0, 1, 2, 3])
 # children
-dataset = dataset.replace("more", 4)
+dataset = dataset.replace(["1","2","3","more"], [0,1,2,3])
 # housing
 dataset["housing"] = dataset["housing"].replace(["critical", "less_conv", "convenient"], [0, 1, 2])
 # finance
@@ -58,8 +60,9 @@ test_labels['result']=pop_test
 
 test_labels=test_labels.transpose()
 train_labels=train_labels.transpose()
-print(train_labels.head())
-print(test_labels.head())
+print(train_dataset.head())
+#print(train_labels.head())
+#print(test_labels.head())
 
 
 print ("train_dataset shape: " + str(train_dataset.shape))
@@ -67,3 +70,28 @@ print ("train_labels shape: " + str(train_labels.shape))
 print ("test_dataset shape: " + str(test_dataset.shape))
 print ("test_labels shape: " + str(test_labels.shape))
 
+
+#print ("relu(0) = " + str(relu(0)))
+
+#dim = 2
+#w, b = initialize_with_zeros(dim)
+#print ("w = " + str(w))
+#print ("b = " + str(b))
+
+#w, b, X, Y = np.array([[1], [2]]), 2, np.array([[1,2], [3,4]]), np.array([[1, 0]])
+#grads, cost = propagate(w, b, X, Y)
+#print ("dw = " + str(grads["dw"]))
+#print ("db = " + str(grads["db"]))
+#print ("cost = " + str(cost))
+
+#arams, grads, costs = optimize(w, b, X, Y, num_iterations= 400, learning_rate = 0.009, print_cost = True)
+
+#print ("w = " + str(params["w"]))
+#print ("b = " + str(params["b"]))
+#print ("dw = " + str(grads["dw"]))
+#print ("db = " + str(grads["db"]))
+
+#print("predictions = " + str(predict(w, b, X)))
+
+print(train_dataset.dtypes)
+d = model(train_dataset, train_labels, test_dataset, test_labels, num_iterations = 2000, learning_rate = 0.005, print_cost = True)
