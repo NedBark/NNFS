@@ -26,13 +26,14 @@ def propagate(w, b, X, Y):
 
 
     m = X.shape[1]
-    print(w.shape)
-    print(X.shape)
-    A = relu(np.dot(X, w) + b)  # compute activation
-    cost = (- 1 / m) * n(Y - A)  # compute cost
+    A = relu(np.dot(w.T,X) + b)  # compute activation
+    cost =np.sum((Y-A), axis=0)  # compute cost
+    cost = (- 1 / m)*np.sum(cost)
 
-    dw = (1 / m) * np.dot(X, (A - Y))
-    db = (1 / m) * np.sum(A - Y)
+    dw = (1 / m) * np.dot(X, (A - Y).T)
+    db = np.sum(A - Y, axis=0)
+    db = (1 / m) *  np.sum(db)
+
 
     assert (dw.shape == w.shape)
     assert (db.dtype == float)
@@ -102,7 +103,7 @@ def model(X_train, Y_train, X_test, Y_test, num_iterations=2000, learning_rate=0
 
 
     # initialize parameters with zeros (≈ 1 line of code)
-    w, b = initialize_with_zeros(X_train.shape[1])
+    w, b = initialize_with_zeros(X_train.shape[0])
 
     # Gradient descent (≈ 1 line of code)
     parameters, grads, costs = optimize(w, b, X_train, Y_train, num_iterations, learning_rate, print_cost)

@@ -20,7 +20,7 @@ raw_dataset = pd.read_csv(dataset_path, names=column_names,
                           na_values="?", comment='\t',
                           sep=",", skipinitialspace=True)
 
-print(raw_dataset.dtypes)
+#print(raw_dataset.dtypes)
 dataset = raw_dataset.copy()
 dataset.tail()
 
@@ -58,9 +58,11 @@ train_labels['result']=pop_train
 test_labels=pd.DataFrame(columns=['result'])
 test_labels['result']=pop_test
 
+train_dataset=train_dataset.transpose()
 test_labels=test_labels.transpose()
 train_labels=train_labels.transpose()
-print(train_dataset.head())
+test_dataset=test_dataset.transpose()
+#print(train_dataset.head())
 #print(train_labels.head())
 #print(test_labels.head())
 
@@ -93,5 +95,5 @@ print ("test_labels shape: " + str(test_labels.shape))
 
 #print("predictions = " + str(predict(w, b, X)))
 
-print(train_dataset.dtypes)
-d = model(train_dataset, train_labels, test_dataset, test_labels, num_iterations = 2000, learning_rate = 0.005, print_cost = True)
+#print(train_dataset.dtypes)
+d = model(train_dataset, train_labels, test_dataset, test_labels, num_iterations = 2000, learning_rate = 0.005, print_cost = False)
