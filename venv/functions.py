@@ -92,7 +92,17 @@ def predict(w, b, X):
 
     for i in range(A.shape[1]):
         # Convert probabilities a[0,i] to actual predictions p[0,i]
-        Y_prediction[0, i] = 1 if A[0, i] > 0.5 else 0
+        if A[0,i]>0 and A[0,i]<1:
+            Y_prediction[0,i]=0
+        if A[0,i]>1 and A[0,i]<2:
+            Y_prediction[0,i]=1
+        if A[0,i]>2 and A[0,i]<3:
+            Y_prediction[0,i]=2
+        if A[0,i]>3 and A[0,i]<4:
+            Y_prediction[0,i]=3
+        if A[0,i]>4 and A[0,i]<5:
+            Y_prediction[0,i]=4
+
 
     assert (Y_prediction.shape == (1, m))
 
@@ -117,8 +127,8 @@ def model(X_train, Y_train, X_test, Y_test, num_iterations=2000, learning_rate=0
     Y_prediction_train = predict(w, b, X_train)
 
     # Print train/test Errors
-    print("train accuracy: {} %".format(100 - np.mean(np.abs(Y_prediction_train - Y_train)) * 100))
-    print("test accuracy: {} %".format(100 - np.mean(np.abs(Y_prediction_test - Y_test)) * 100))
+    print("train accuracy: {} %".format(100 - np.mean(np.abs(Y_prediction_train - (Y_train))) * 100))
+    print("test accuracy: {} %".format(100 - np.mean(np.abs(Y_prediction_test - (Y_test))) * 100))
 
     d = {"costs": costs,
          "Y_prediction_test": Y_prediction_test,
