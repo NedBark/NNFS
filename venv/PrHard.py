@@ -7,6 +7,7 @@ import pandas as pd
 #from PIL import Image
 from scipy import ndimage
 from functions import *
+from TwoLayersFunctions import *
 #from lr_utils import load_dataset
 
 
@@ -25,8 +26,7 @@ dataset = raw_dataset.copy()
 dataset.tail()
 
 # has_nurs
-dataset["has_nurs"] = dataset["has_nurs"].replace(["very_crit", "critical", "improper", "less_proper", "proper"],
-                                                  [0, 1, 2, 3, 4])
+dataset["has_nurs"] = dataset["has_nurs"].replace(["very_crit", "critical", "improper", "less_proper", "proper"],[0, 1, 2, 3, 4])
 # parents
 dataset["parents"] = dataset["parents"].replace(["great_pret", "pretentious", "usual"], [0, 1, 2])
 # form
@@ -44,8 +44,10 @@ dataset["health"] = dataset["health"].replace(["recommended", "priority", "not_r
 # result
 dataset["result"] = dataset["result"].replace(["not_recom", "recommend", "very_recom", "priority", "spec_prior"],
                                               [0, 1, 2, 3, 4])
-
-#print(dataset)
+#make values yes and no
+dataset["result"] = dataset["result"].replace([0, 1, 2, 3, 4],[0, 0, 1, 1, 1])
+ls=[i for i in dataset["result"] if i>0]
+print(ls)
 
 train_dataset = dataset.sample(frac=0.8, random_state=0)
 test_dataset = dataset.drop(train_dataset.index)
@@ -96,4 +98,14 @@ print ("test_labels shape: " + str(test_labels.shape))
 #print("predictions = " + str(predict(w, b, X)))
 
 #print(train_dataset.dtypes)
-d = model(train_dataset, train_labels, test_dataset, test_labels, num_iterations = 2000, learning_rate = 0.005, print_cost = False)
+
+#first try:
+d = model(train_dataset, train_labels, test_dataset, test_labels, num_iterations = 2000,
+          learning_rate = 0.005, print_cost = True)
+
+#Second try with 2 layers. We pray to the deep gods at this point:
+
+#params = two_layer_model(train_dataset, train_labels, (8,7,1), learning_rate=0.75, num_iterations=50, print_cost=True)
+
+#predict_train=predict(train_dataset,train_labels, params)
+#predict_train=predict(test_dataset,test_labels, params)
