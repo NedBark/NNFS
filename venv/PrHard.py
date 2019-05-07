@@ -108,13 +108,13 @@ print ("test_labels shape: " + str(test_labels.shape))
 
 #Second try with 2 layers. We pray to the deep gods at this point:
 
-params, costs = two_layer_model(train_dataset, train_labels, (8,7,1), learning_rate=0.75, num_iterations=50, print_cost=True)
+params, costs = two_layer_model(train_dataset, train_labels, (8,7,1), learning_rate=0.75, num_iterations=5, print_cost=True)
 
 print(costs)
-with open('params.txt', 'w') as f:
-    pickle.dumps((params), f)
-with open('costs.txt', 'w') as g:
-    g.write((pickle.dumps(costs), g))
+with open('params.txt', 'wb') as f:
+    pickle.dump(params, f)
+with open('costs.txt', 'wb') as g:
+    pickle.dump(costs, g)
 
 
 
