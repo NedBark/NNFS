@@ -68,7 +68,7 @@ def initialize_parameters_deep(layer_dims):
 
 
 def linear_forward(A, W, b):
-    Z = np.dot(W, A) + b
+    Z = W.dot(A) + b
 
     assert (Z.shape == (W.shape[0], A.shape[1]))
     cache = (A, W, b)
@@ -112,7 +112,7 @@ def L_model_forward(X, parameters):
 def compute_cost(AL, Y):
     m = Y.shape[1]
     AL = np.around(AL, decimals=5)
-    cost = -(1 / m) * np.sum(np.multiply(Y, np.log(AL)) + np.multiply(1 - Y, np.log(1 - AL)),axis=1)
+    cost = (1./m) * (-np.dot(Y,np.log(AL).T) - np.dot(1-Y, np.log(1-AL).T))
 
     cost = np.squeeze(cost)  # To make sure your cost's shape is what we expect (e.g. this turns [[17]] into 17).
     assert (cost.shape == ())
@@ -124,9 +124,9 @@ def linear_backward(dZ, cache):
 
     A_prev, W, b = cache
     m = A_prev.shape[1]
-    dW = (1 / m) * np.dot(dZ, np.transpose(A_prev))
+    dW = 1./m * np.dot(dZ, A_prev.T)
     db = (1 / m) * np.sum(pd.DataFrame(dZ).to_numpy(), axis=1, keepdims=True)
-    dA_prev = np.dot(np.transpose(W), dZ)
+    dA_prev = np.dot(W.T, dZ)
 
     assert (dA_prev.shape == A_prev.shape)
     assert (dW.shape == W.shape)
@@ -163,8 +163,8 @@ def L_model_backward(AL, Y, caches):
                                                                                                   "sigmoid")
     for l in reversed(range(L - 1)):
         current_cache = caches[l]
-        dA_prev_temp, dW_temp, db_temp = linear_activation_backward(grads["dA" + str(l + 2)], current_cache, "relu")
-        grads["dA" + str(l + 1)] = dA_prev_temp
+        dA_prev_temp, dW_temp, db_temp = linear_activation_backward(grads["dA" + str(l + 1)], current_cache, "relu")
+        grads["dA" + str(l)] = dA_prev_temp
         grads["dW" + str(l + 1)] = dW_temp
         grads["db" + str(l + 1)] = db_temp
     return grads
@@ -199,7 +199,7 @@ def predict(X, y, parameters):
     # print results
     # print ("predictions: " + str(p))
     # print ("true labels: " + str(y))
-    print("Accuracy: " + str(np.sum((p == y) / m)),axis=1)
+    print("Accuracy: " + str(np.sum((p == y) / m)), axis=1)
 
     return p
 
@@ -255,15 +255,15 @@ def two_layer_model(X, Y, layers_dims, learning_rate=0.0075, num_iterations=3000
         # Print the cost every 100 training example
         if print_cost and i % 1 == 0:
             print("Cost after iteration {}: {}".format(i, np.squeeze(cost)))
-        if print_cost and i % 100 == 0:
+        if print_cost and i % 1 == 0:
             costs.append(cost)
 
     # plot the cost
 
-    plt.plot(np.squeeze(costs))
+    plt.plot(costs)
     plt.ylabel('cost')
     plt.xlabel('iterations (per tens)')
     plt.title("Learning rate =" + str(learning_rate))
     plt.show()
 
-    return parameters
+    return parameters, costs
