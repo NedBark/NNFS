@@ -10,6 +10,8 @@ from scipy import ndimage
 from TwoLayersFunctions import *
 #from lr_utils import load_dataset
 import _pickle as pickle
+import ManyLayers
+
 
 dataset_path = keras.utils.get_file("nursery.data",
                                     "https://archive.ics.uci.edu/ml/machine-learning-databases/nursery/nursery.data",
