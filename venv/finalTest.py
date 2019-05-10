@@ -47,7 +47,7 @@ dataset["result"] = dataset["result"].replace(["not_recom", "recommend", "very_r
 #make values yes and no
 dataset["result"] = dataset["result"].replace([0, 1, 2, 3, 4],[0, 0, 1, 1, 1])
 
-train_dataset = dataset.sample(frac=0.8, random_state=0)
+train_dataset = dataset.sample(frac=0.5, random_state=0)
 test_dataset = dataset.drop(train_dataset.index)
 
 
@@ -77,13 +77,13 @@ print ("train_labels shape: " + str(train_labels.shape))
 print ("test_dataset shape: " + str(test_dataset.shape))
 print ("test_labels shape: " + str(test_labels.shape))
 
-f = open('params.pickle', 'rb')
-g = open('costs.pickle', 'rb')
+f = open('params3.pickle', 'rb')
+g = open('costs3.pickle', 'rb')
 
 params = pickle.load(f)
 costs = pickle.load(g)
 
 print(params)
 
-predict_train=predict(train_dataset, train_labels, params)
-predict_train=predict(test_dataset,test_labels, params)
+predict_train=L_predict(train_dataset, train_labels, params)
+predict_train=L_predict(test_dataset,test_labels, params)

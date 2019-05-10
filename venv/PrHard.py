@@ -10,7 +10,7 @@ from scipy import ndimage
 from TwoLayersFunctions import *
 #from lr_utils import load_dataset
 import _pickle as pickle
-import ManyLayers
+from ManyLayers import *
 
 
 dataset_path = keras.utils.get_file("nursery.data",
@@ -25,7 +25,7 @@ raw_dataset = pd.read_csv(dataset_path, names=column_names,
 
 #print(raw_dataset.dtypes)
 dataset = raw_dataset.copy()
-dataset.tail()
+dataset = dataset[:-3000]
 
 # has_nurs
 dataset["has_nurs"] = dataset["has_nurs"].replace(["very_crit", "critical", "improper", "less_proper", "proper"],[0, 1, 2, 3, 4])
@@ -47,9 +47,9 @@ dataset["health"] = dataset["health"].replace(["recommended", "priority", "not_r
 dataset["result"] = dataset["result"].replace(["not_recom", "recommend", "very_recom", "priority", "spec_prior"], [0, 1, 2, 3, 4])
 
 #make values yes and no
-dataset["result"] = dataset["result"].replace([0, 1, 2, 3, 4],[0, 0, 1, 1, 1])
+dataset["result"] = dataset["result"].replace([0, 1, 2, 3, 4], [0, 0, 1, 1, 1])
 
-train_dataset = dataset.sample(frac=0.8, random_state=0)
+train_dataset = dataset.sample(frac=0.3, random_state=0)
 test_dataset = dataset.drop(train_dataset.index)
 
 
@@ -104,24 +104,20 @@ print ("test_labels shape: " + str(test_labels.shape))
 
 #print(train_dataset.dtypes)
 
-#first try:
-#d = model(train_dataset, train_labels, test_dataset, test_labels, num_iterations = 2000,
-          #learning_rate = 0.005, print_cost = True)
+#params, costs = two_layer_model(train_dataset, train_labels, (8,7,1), learning_rate=0.075, num_iterations=200, print_cost=True)
 
-#Second try with 2 layers. We pray to the deep gods at this point:
+params, costs = L_layer_model(train_dataset, train_labels, layers_dims=(8,7,3,1),
+                              learning_rate=0.075,
+                              num_iterations=360, print_cost=True)
 
-params, costs = two_layer_model(train_dataset, train_labels, (8,7,1), learning_rate=0.075, num_iterations=200, print_cost=True)
 
 print(costs)
-with open('params.pickle', 'wb') as f:
+with open('params3.pickle', 'wb') as f:
     pickle.dump(params, f)
     f.close()
-with open('costs.pickle', 'wb') as g:
+with open('costs3.pickle', 'wb') as g:
     pickle.dump(costs, g)
     g.close()
 
 
 
-
-#predict_train=predict(train_dataset,train_labels, params)
-#predict_train=predict(test_dataset,test_labels, params)

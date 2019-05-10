@@ -18,6 +18,7 @@ def relu_back(dA, cache):
     return dZ
 
 def sigmoid(Z):
+    Z = np.where(Z == 0, 0.001, Z)
     A = 1 / (1 + np.exp(-Z))
     cache = Z
     return A, cache
@@ -111,8 +112,7 @@ def L_model_forward(X, parameters):
 
 def compute_cost(AL, Y):
     m = Y.shape[1]
-    AL = np.around(AL, decimals=5)
-    cost = (1./m) * (-np.dot(Y,np.log(AL).T) - np.dot(1-Y, np.log(1-AL).T))
+    cost = (1./m) * (-np.dot(Y, np.log(AL).T) - np.dot(1-Y, np.log(1-AL).T))
 
     cost = np.squeeze(cost)  # To make sure your cost's shape is what we expect (e.g. this turns [[17]] into 17).
     assert (cost.shape == ())
@@ -179,7 +179,7 @@ def update_parameters(parameters, grads, learning_rate):
     return parameters
 
 
-def predict(X, y, parameters):
+def L_predict(X, y, parameters):
 
 
     m = X.shape[1]
